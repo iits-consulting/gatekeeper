@@ -29,11 +29,27 @@ const (
 )
 
 // entrypointMiddleware is custom filtering for incoming requests
-func EntrypointMiddleware(logger *zap.Logger) func(http.Handler) http.Handler {
+func EntrypointMiddleware(logger *zap.Logger, forwardAuthMode bool) func(http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(wrt http.ResponseWriter, req *http.Request) {
 			// @step: create a context for the request
 			scope := &models.RequestScope{}
+
+			if forwardAuthMode {
+				if forwardedPath := req.Header.Get("X-Forwarded-Uri"); forwardedPath != "" {
+					req.URL.Path = forwardedPath
+				}
+				if forwardedMethod := req.Header.Get("X-Forwarded-Method"); forwardedMethod != "" {
+					req.Method = forwardedMethod
+				}
+				if forwardedProto := req.Header.Get("X-Forwarded-Proto"); forwardedProto != "" {
+					req.Proto = forwardedProto
+				}
+				if forwardedHost := req.Header.Get("X-Forwarded-Host"); forwardedHost != "" {
+					req.Host = forwardedHost
+				}
+			}
+
 			// Save the exact formatting of the incoming request so we can use it later
 			scope.Path = req.URL.Path
 			scope.RawPath = req.URL.RawPath

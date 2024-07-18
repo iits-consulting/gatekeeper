@@ -280,6 +280,9 @@ type Config struct {
 
 	// Verbose switches on debug logging
 	Verbose bool `env:"VERBOSE" json:"verbose" usage:"switch on debug / verbose logging" yaml:"verbose"`
+
+	// Verbose switches on debug logging
+	ForwardAuthMode bool `env:"FORWARD_AUTH_MODE" json:"forward-auth-mode" usage:"toggle overriding of request information from the X-FORWARD-* headers" yaml:"forward-auth-mode"`
 	// EnableProxyProtocol controls the proxy protocol
 	EnableProxyProtocol bool `env:"ENABLE_PROXY_PROTOCOL" json:"enabled-proxy-protocol" usage:"enable proxy protocol" yaml:"enabled-proxy-protocol"`
 
